@@ -111,17 +111,26 @@ public:
         cout << endl;
         */
         int original[9] = { 1,2,3,4,5,6,7,8,9 };
-        shuffle(shuffleArray.begin(), shuffleArray.end(), default_random_engine(seed));
-        for (int i = 0; i < 9; i++) {
-            Swap(shuffleArray[i], original[i]);
+        string **tempArray = new string *[gridSize];
+        for (int i = 0; i < gridSize; i++)
+        {
+            tempArray[i] = new string[3];
         }
-        /*
-        for (int i = 0; i < 9; i++) {
-            cout << shuffleArray.at(i) << " ";
+
+        for (int i = 0; i < 9; i++)
+        {
+            Swap(shuffleArray[i], original[i], tempArray);
         }
-        */
+
+        for (int i = 0; i < gridSize; i++)
+        {
+            for (int j = 0; j < gridSize; j++)
+            {
+                gridNodes[i][j].currentLocation = tempArray[i][j];
+            }
+        }
     }
-    
+
     void Shuffle(){
         //int newShuffle[9] = {1,2,3,4,5,6,7,8,9}; 
         //int newShuffle[9] = {9, 8, 7, 6, 5, 4, 3, 2, 1};
@@ -168,7 +177,8 @@ int main()
     cout << endl;
     a.PrintGridNumbers();
     cout << endl;
-    a.Shuffle();
+    a.randomize();
+    //a.Shuffle();
     a.PrintGrid();
     cout << endl;
 }
