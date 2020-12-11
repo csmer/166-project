@@ -23,8 +23,8 @@ public:
     int nodeNum;
     Node** gridNodes;
 
-    Grid() {
-        gridSize = 3;
+    Grid(int size = 3) {
+        gridSize = size;
         nodeNum = (gridSize * gridSize);
         gridNodes = new Node * [gridSize];
 
@@ -47,7 +47,7 @@ public:
     void Print() {
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
-                cout << " Node: " << gridNodes[i][j].number << 
+                cout << "Node: " << gridNodes[i][j].number << 
                 ", Ox: " << gridNodes[i][j].oX << ", Oy: " << gridNodes[i][j].oY << endl;
 
                 cout << "Current Loc: " << gridNodes[i][j].currentLocation <<
@@ -278,30 +278,57 @@ public:
         }
         return true;
     }
+};
+
+class IDA {
+    public:
+
 
 };
 
+class BFS{
+
+};
 // TODO: BFS uses valid moves for starting node then swap in BFS order
 
+class BoardGame {
+    public:
+    Grid* grid;
+    IDA search;
+
+    BoardGame(){
+        /*
+        int size;
+        cout << "Enter Board Size: ";
+        cin >> size;
+        cout << endl;
+        grid = new Grid(size);
+        */
+       grid = new Grid;
+    }
+
+};
 
 int main()
 {
-    Grid a;
+    BoardGame game;
+    //game.grid->PrintGrid();
+    //Grid a;
     //a.Print();
     //cout << endl;
-    a.PrintGrid();
+    game.grid->PrintGrid();
     cout << endl;
 
-    a.ValidMoves();
-    //a.PrintGridNumbers();
+    game.grid->ValidMoves();
+    //game.grid->PrintGridNumbers();
     //cout << endl;
-    //a.randomize();
-    a.Shuffle();
-    //a.PrintGrid();
-    a.PrintGridNumbers();
-    a.Swap(0,2,1,1);
+    //game.grid->randomize();
+    game.grid->Shuffle();
+    //game.grid->PrintGrid();
+    game.grid->PrintGridNumbers();
+    game.grid->Swap(0, 2, 1, 1);
     cout << endl << "SWAP" << endl;
-    a.PrintGridNumbers();
-    a.ValidMoves();
+    game.grid->PrintGridNumbers();
+    game.grid->ValidMoves();
     cout << endl;
 }  
