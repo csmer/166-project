@@ -199,11 +199,8 @@ public:
         }
     } */
 
-
     void Shuffle(){
-        //int newShuffle[9] = {1,2,3,4,5,6,7,8,9}; 
-        //int newShuffle[9] = {9, 8, 7, 6, 5, 4, 3, 2, 1};
-        int newShuffle[9] = {8,9,7,1,2,4,6,5,3};
+        int newShuffle[9] = {1,9,5,8,3,2,4,6,7};
         int original[9] =   {1,2,3,4,5,6,7,8,9};
 
         Node** newNodes = new Node *[gridSize];
@@ -295,16 +292,54 @@ public:
 class IDA {
     public:
     int threshHold;
+    Node** gridNodes;
 
-
-    IDA(){
-        int lol = 0;
+    IDA(Node** nodes = nullptr){
+        gridNodes = nodes;
     };
 
-    int BestMove(vector<int> moves){
-
+    void Sort(vector<int>* arr){
+        int step = 0;
+        for(int i = 0; i < arr->size(); ++i) {
+            int min = i;
+            for(int j = i + 1; j < arr->size(); ++j) {
+                if(arr[j] < arr[min]) {
+                    min = j;
+                }
+                step++;
+            }
+            int temp = arr->at(i);
+            arr[i] = arr[min];
+            arr->at(min) = temp;
+        }
     }
 
+    int BestMove(vector<int> moves){
+        vector<int> heuristic_values = Heuristic(moves);
+        //IDA* usually has a f(x) = g(x) [cost] + h(x) [heuritic], 
+        //however the weight of each path is same so f(x) = h(x)
+
+        int small = heuristic_values[0];
+        /*
+        for (int i = 1; i < heuristic_values.size(); i++) {
+            if(heuristic_values[i] < small){
+
+            }
+        }
+        */
+    }
+
+    vector<int> Heuristic(vector<int> moves) {
+        int y, x;
+        vector<int> values;
+        for(int i = 0; i < moves.size(); i+=2){
+            y = moves.at(i);
+            x = moves.at(i+1);
+
+            values.push_back((gridNodes[y][x].oY - y) + abs(gridNodes[y][x].oX - x));
+        }
+        return values;
+    }
 };
 
 class BFS{
@@ -315,7 +350,7 @@ class BFS{
 class BoardGame {
     public:
     Grid* grid;
-    IDA search;
+    IDA* search;
 
     BoardGame(){
         /*
@@ -332,6 +367,7 @@ class BoardGame {
         }
         */
        grid = new Grid;
+       search = new IDA(grid->gridNodes);
     }
 
 };
@@ -350,10 +386,10 @@ int main()
     //game.grid->PrintGridNumbers();
     //cout << endl;
     //game.grid->randomize();
-    //game.grid->Shuffle();
+    game.grid->Shuffle();
     //game.grid->PrintGrid();
     //game.grid->PrintGridNumbers();
-    game.grid->Swap(0, 2, 1, 1);
+    //game.grid->Swap(0, 2, 1, 1);
     //cout << endl << "SWAP" << endl;
     game.grid->PrintGridNumber();
     game.grid->ValidMoves();
