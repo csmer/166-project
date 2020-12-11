@@ -12,8 +12,9 @@ using namespace std;
 class Node {
 public:
     int x, y;
-    int currentLocation;
     int number;
+    int oX, oY;
+    int currentLocation;
 };
 
 class Grid {
@@ -37,6 +38,8 @@ public:
                gridNodes[i][j].currentLocation = gridNodes[i][j].number;
                gridNodes[i][j].x = j;
                gridNodes[i][j].y = i;
+               gridNodes[i][j].oX = j;
+               gridNodes[i][j].oY = i;
            }
        }
     }
@@ -45,8 +48,10 @@ public:
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
                 cout << " Node: " << gridNodes[i][j].number << 
-                ", Current Loc: " << gridNodes[i][j].currentLocation <<
-                 ", x: " << gridNodes[i][j].x << ", y: " << gridNodes[i][j].y << endl;
+                ", Ox: " << gridNodes[i][j].oX << ", Oy: " << gridNodes[i][j].oY << endl;
+
+                cout << "Current Loc: " << gridNodes[i][j].currentLocation <<
+                 ", x: " << gridNodes[i][j].x << ", y: " << gridNodes[i][j].y << endl << endl;
             }
         }
     }
@@ -209,11 +214,15 @@ public:
     }
 
     void Swap(int Loc1y, int Loc1x, int Loc2y, int Loc2x) { //fixme
-        Node temp = gridNodes[Loc1x][Loc1y];
-        temp.x = Loc2x;
-        temp.y = Loc2y;
-        gridNodes[Loc1y][Loc1x] = gridNodes[Loc2y][Loc2x];
-        gridNodes[Loc2x][Loc2x] = temp;
+        Node temp = gridNodes[Loc1y][Loc1x];
+
+        gridNodes[Loc1y][Loc1x].number = gridNodes[Loc2y][Loc2x].number;
+        gridNodes[Loc1y][Loc1x].oX = gridNodes[Loc2y][Loc2x].oX;
+        gridNodes[Loc1y][Loc1x].oY = gridNodes[Loc2y][Loc2x].oY;
+
+        gridNodes[Loc2y][Loc2x].number = temp.number;
+        gridNodes[Loc2y][Loc2x].oX = temp.oX;
+        gridNodes[Loc2y][Loc2x].oY = temp.oY;
     }
 
     int ValidMoves(){
@@ -250,7 +259,6 @@ public:
         for(int i = 0; i < validMoves.size(); i++) { 
             moves2[i] = validMoves.at(i); 
         }
-        
 
         cout << "Valid Moves: ";
         for(int i = 0; i < validMoves.size(); i+=2) { 
@@ -273,7 +281,7 @@ public:
 
 };
 
-
+// TODO: BFS uses valid moves for starting node then swap in BFS order
 
 
 int main()
@@ -291,7 +299,9 @@ int main()
     a.Shuffle();
     //a.PrintGrid();
     a.PrintGridNumbers();
-
+    a.Swap(0,2,1,1);
+    cout << endl << "SWAP" << endl;
+    a.PrintGridNumbers();
     a.ValidMoves();
     cout << endl;
 }  
