@@ -143,7 +143,7 @@ public:
             shuffleArray[i] = i + 1;
         }
         unsigned seed = 0;
-        shuffle(&shuffleArray[0], &shuffleArray[nodeNum-1], default_random_engine(seed));
+        shuffle(&shuffleArray[0], &shuffleArray[nodeNum], default_random_engine(seed));
 
         int* original = new int [nodeNum];
         for(int i = 0; i < nodeNum; i++){
