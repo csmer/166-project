@@ -11,6 +11,7 @@ using namespace std;
 
 class Node {
 public:
+    int heuristic_value;
     int x, y;
     int number;
     int oX, oY;
@@ -229,7 +230,7 @@ public:
         }
     }
 
-    void Swap(int Loc1y, int Loc1x, int Loc2y, int Loc2x) { //fixme
+    void Swap(int Loc1y, int Loc1x, int Loc2y, int Loc2x) {
         Node temp = gridNodes[Loc1y][Loc1x];
 
         gridNodes[Loc1y][Loc1x].number = gridNodes[Loc2y][Loc2x].number;
@@ -241,8 +242,8 @@ public:
         gridNodes[Loc2y][Loc2x].oY = temp.oY;
     }
 
-    int ValidMoves(){
-        Print();
+    vector<int> ValidMoves(){
+        //Print();
         Node* empty = nullptr;
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
@@ -271,17 +272,12 @@ public:
             }
         }
 
-        int* moves2 = new int[validMoves.size()];
-        for(int i = 0; i < validMoves.size(); i++) { 
-            moves2[i] = validMoves.at(i); 
-        }
-
         cout << "Valid Moves: ";
         for(int i = 0; i < validMoves.size(); i+=2) { 
-            cout << "y " << moves2[i] << " x " << moves2[i+1] << ", ";
+            cout << "y " << validMoves[i] << " x " << validMoves[i+1] << ", ";
         }
         cout << endl << endl;
-        return *moves2;
+        return validMoves;
     }
 
     bool CheckSorted(){
@@ -298,7 +294,16 @@ public:
 
 class IDA {
     public:
+    int threshHold;
 
+
+    IDA(){
+        int lol = 0;
+    };
+
+    int BestMove(vector<int> moves){
+
+    }
 
 };
 
@@ -315,10 +320,16 @@ class BoardGame {
     BoardGame(){
         /*
         int size;
-        cout << "Enter Board Size: ";
+        cout << "Enter Board Size 3 or Above: ";
         cin >> size;
         cout << endl;
-        grid = new Grid(size);
+        if(size < 3){
+            cout << "Invalid Size! Defaulted to Size: 3" << endl;
+            grid = new Grid;
+        }
+        else{
+            grid = new Grid(size);
+        }
         */
        grid = new Grid;
     }
