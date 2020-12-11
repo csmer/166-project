@@ -29,7 +29,7 @@ public:
         gridNodes = new Node * [gridSize];
 
         for (int i = 0; i < gridSize; i++) {
-            gridNodes[i] = new Node[3];
+            gridNodes[i] = new Node[size];
         }
 
        for (int i = 0; i < gridSize; i++) {
@@ -56,52 +56,21 @@ public:
         }
     }
 
-    void PrintGridNumbers() {
-        int maxLength = to_string(gridSize * gridSize).length();
-        for (int i = 0; i < gridSize; i++) {
-            cout << "|";
-            for (int j = 0; j < gridSize; j++){
-                if (gridNodes[i][j].number == (gridSize * gridSize)) {
-                    cout << " ";
-                    for (int k = 0; k < maxLength; k++) {
-                        cout << " ";
-                    }
-                    cout << " |";
-                }
-                else if (to_string(gridNodes[i][j].number).length() < maxLength) {
-                    cout << " ";
-                    for (int k = 0; k < maxLength - to_string(gridNodes[i][j].number).length(); k++) {
-                        cout << " ";
-                    }
-                    cout << " |";
-                }
-                else {
-                    cout << " " << gridNodes[i][j].number << " |";
-                }
-            }
-
-            if (i != gridSize - 1) {
-                cout << endl
-                     << "|---";
-                for (int j = 0; j < gridSize - 1; j++)
-                {
-                    cout << "|---";
-                }
-                cout << "|";
-            }
-            cout << endl;
-        }
-    }
-
-    void PrintGrid()
+    void PrintGridNumber()
     {
         int maxLength = to_string(gridSize * gridSize).length();
+        string line = "|--";
+        for (int i = 0; i < maxLength; i++)
+        {
+            line += "-";
+        }
+
         for (int i = 0; i < gridSize; i++)
         {
             cout << "|";
             for (int j = 0; j < gridSize; j++)
             {
-                if (gridNodes[i][j].currentLocation == (gridSize * gridSize))
+                if (gridNodes[i][j].number == (gridSize * gridSize))
                 {
                     cout << " ";
                     for (int k = 0; k < maxLength; k++)
@@ -110,14 +79,61 @@ public:
                     }
                     cout << " |";
                 }
-                else if (to_string(gridNodes[i][j].currentLocation).length() < maxLength)
+                else if (to_string(gridNodes[i][j].number).length() < maxLength)
                 {
                     cout << " ";
-                    for (int k = 0; k < maxLength - to_string(gridNodes[i][j].currentLocation).length(); k++)
+                    for (int k = 0; k < maxLength - to_string(gridNodes[i][j].number).length(); k++)
                     {
                         cout << " ";
                     }
+                    cout << gridNodes[i][j].number << " |";
+                }
+                else
+                {
+                    cout << " " << gridNodes[i][j].number << " |";
+                }
+            }
+
+            if (i != gridSize - 1)
+            {
+                cout << endl
+                     << line; //<< "|---";
+                //s
+
+                for (int j = 0; j < gridSize - 1; j++)
+                {
+                    cout << line;
+                }
+                cout << "|";
+            }
+            cout << endl;
+        }
+    }
+
+    void PrintGrid() {
+        int maxLength = to_string(gridSize * gridSize).length();
+        string line = "|--";
+        for(int i = 0; i < maxLength; i++) {
+            line += "-";
+        }
+
+        for (int i = 0; i < gridSize; i++) {
+            cout << "|";
+            for (int j = 0; j < gridSize; j++) {
+                if (gridNodes[i][j].currentLocation == (gridSize * gridSize)) {
+                    cout << " ";
+                    for (int k = 0; k < maxLength; k++) {
+                        cout << " ";
+                    }
                     cout << " |";
+                }
+                else if (to_string(gridNodes[i][j].currentLocation).length() < maxLength)
+                {
+                    cout << " ";
+                    for (int k = 0; k < maxLength - to_string(gridNodes[i][j].currentLocation).length(); k++){
+                        cout << " ";
+                    }
+                    cout << gridNodes[i][j].currentLocation << " |";
                 }
                 else
                 {
@@ -127,11 +143,11 @@ public:
 
             if (i != gridSize - 1)
             {
-                cout << endl
-                     << "|---";
-                for (int j = 0; j < gridSize - 1; j++)
-                {
-                    cout << "|---";
+                cout << endl << line; //<< "|---";
+                //s
+
+                for (int j = 0; j < gridSize - 1; j++){
+                    cout << line;
                 }
                 cout << "|";
             }
@@ -230,7 +246,7 @@ public:
         Node* empty = nullptr;
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
-                if(gridNodes[i][j].number == 9){
+                if(gridNodes[i][j].number == nodeNum){
                     empty = &gridNodes[i][j];
                 }
             }
@@ -312,23 +328,23 @@ class BoardGame {
 int main()
 {
     BoardGame game;
-    //game.grid->PrintGrid();
+    //game.grid->Print();
     //Grid a;
     //a.Print();
     //cout << endl;
     game.grid->PrintGrid();
     cout << endl;
 
-    game.grid->ValidMoves();
+    //game.grid->ValidMoves();
     //game.grid->PrintGridNumbers();
     //cout << endl;
     //game.grid->randomize();
-    game.grid->Shuffle();
+    //game.grid->Shuffle();
     //game.grid->PrintGrid();
-    game.grid->PrintGridNumbers();
+    //game.grid->PrintGridNumbers();
     game.grid->Swap(0, 2, 1, 1);
-    cout << endl << "SWAP" << endl;
-    game.grid->PrintGridNumbers();
+    //cout << endl << "SWAP" << endl;
+    game.grid->PrintGridNumber();
     game.grid->ValidMoves();
-    cout << endl;
+    //cout << endl;
 }  
