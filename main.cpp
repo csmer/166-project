@@ -15,17 +15,18 @@
 using namespace std;
 
 void RunIDASearch(int loop, BoardGame* game) {
-    for(int i = 0; i < loop; i++) {
+    for(int i = 0; i < loop; i++) { //Runs the IDA Search for a limited amount of iteration to avoid long loops.
         game->grid->Swap(game->BestMove(game->grid->ValidMoves(), game->grid->Empty()), game->grid->Empty());
         cout << "Loop: " << i << endl;
         game->grid->PrintGridNumber();
         cout << endl;
 
-        if (game->grid->CheckSorted()) {
+        if (game->grid->CheckSorted()) { //if the Grid becomes sorted break
             cout << "Finished" << endl;
             return;
         }
     }
+    //if unable to sort grid within number of loops
     cout << "Hit the loop Limit" << endl;
 }
 
@@ -43,11 +44,18 @@ void RandomizeGrid(int loop, BoardGame *game){ //Function to be called in main
 
 int main() {
     BoardGame game;
+    //Initial State
     game.grid->PrintGridNumber();
+
+    //Confirmed working Test Case
     game.grid->ShuffleTest();
     game.grid->PrintGridNumber();
     RunIDASearch(100, &game);
 
-    //RandomizeGrid(10, &game);
-    //RunIDASearch(100, &game);
+    //Randomized Case.
+    //Uncomment to Run.
+    /*
+    RandomizeGrid(10, &game);
+    RunIDASearch(100, &game);
+    */
 }

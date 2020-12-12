@@ -99,27 +99,31 @@ public:
         shuffle(&shuffleArray[0], &shuffleArray[nodeNum], default_random_engine(seed));  //Shuffle/randomize the array with a seed
 
         int* original = new int [nodeNum];
+        //intializes the original order of tiles
         for(int i = 0; i < nodeNum; i++) {
             original[i] = i+1;
-        }
+        } 
 
         Node **newNodes = new Node *[gridSize];
+        //create temporary 2D array to copy to.
         for (int i = 0; i < gridSize; i++) {
             newNodes[i] = new Node[gridSize];
         }
 
         for (int i = 0; i < nodeNum; i++) {
+            //Calculate the Cordinates from the Linear Shuffled array
             int newLocY = floor(shuffleArray[i] / (gridSize + 0.1));
             int newLocX = (shuffleArray[i] - 1) % gridSize;
             int oldLocY = floor(original[i] / (gridSize + 0.1));
             int oldLocX = (original[i] - 1) % gridSize;
 
+            //copy data from original 2D to Clone via shuffling.
             newNodes[newLocY][newLocX] = gridNodes[oldLocY][oldLocX];
             newNodes[newLocY][newLocX].currentLocation = shuffleArray[i];
             newNodes[newLocY][newLocX].x = newLocX;
             newNodes[newLocY][newLocX].y = newLocY;
         }
-
+        //Tranfer data from Shuffled Clone, to Original array.
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
                 gridNodes[i][j] = newNodes[i][j];
