@@ -345,7 +345,7 @@ class IDA {
 
     int BestMove(vector<int> moves){
         int threshHold = 0;
-        vector<int> heuristic_values = Heuristic(moves);
+        vector<int> heuristic_new = Heuristic(moves);
         for(int i = 0; i < nodeNum)
 
         //IDA* usually has a f(x) = g(x) [cost] + h(x) [heuritic], 
@@ -429,7 +429,8 @@ class BoardGame {
     }
 
     Node* BestMove(vector<Node*> moves, Node* start) {
-        vector<int> heuristic_values = Heuristic(moves, start->y, start->x);
+        vector<int> heuristic_new = Heuristic(moves, start->y, start->x);
+        vector<int> heuristic_original = Heuristic(moves);
         int cost = 0; //IDA* usually has a f(x) = g(x) [cost] + h(x) [heuritic],
         //however the weight of each path is same so f(x) = h(x)
         if (previous[0] != -1) {
@@ -438,28 +439,65 @@ class BoardGame {
                     moves[i]->x == previous[1] ) {
 
                     moves[i] = moves[moves.size()-1];
-                    heuristic_values[i] = heuristic_values[heuristic_values.size()-1];
+                    heuristic_new[i] = heuristic_new[heuristic_new.size()-1];
+                    heuristic_original[i] = heuristic_original[heuristic_original.size() - 1];
                     moves.pop_back();
-                    heuristic_values.pop_back();
+                    heuristic_new.pop_back();
+                    heuristic_original.pop_back();
                     break;
                 }
             }
         }
 
-        int threshHold = heuristic_values[0];
-        for (int i = 1; i < heuristic_values.size(); i++) {
-            if (heuristic_values[i] < threshHold){
-                threshHold = heuristic_values[i];
+        
+        vector<Node*> excluded;
+        vector<Node*> included;
+        vector<int> includedH;
+        int num;
+        int newh;
+        int oldh;
+        for (int i = 0; i < heuristic_new.size(); i++) {
+            num = moves[i]->number;
+            newh = heuristic_new[i];
+            oldh = heuristic_original[i];
+            
+            if (heuristic_new[i] > heuristic_original[i]) {
+                excluded.push_back(moves[i]);
+            }
+            else {
+                included.push_back(moves[i]);
+                includedH.push_back(heuristic_new[i]);
             }
         }
 
-        int bestMove[2];
+        if(excluded.size() == moves.size()) { 
+            int big = 0;
+            moves.pop_back();
+            for(int i = 1; i < heuristic_new.size(); i++){
+                if (heuristic_new[i] < heuristic_new[big]) {
+                    big = i;
+                }
+                moves.pop_back();
+            }
+            included.push_back(excluded.at(big));
+            includedH.push_back(heuristic_new.at(big));
+        }
+
+        int threshHold = includedH[0];
+        for (int i = 1; i < includedH.size(); i++)
+        {
+            if (includedH[i] < threshHold)
+            {
+                threshHold = includedH[i];
+            }
+        }
+        
         vector<Node*> nodes;
         Node* node = nullptr;
 
-        for (int i = 0; i < moves.size(); i++){
-            if (heuristic_values[i] <= threshHold) {
-                nodes.push_back(moves[i]);
+        for (int i = 0; i < included.size(); i++){
+            if (includedH[i] <= threshHold) {
+                nodes.push_back(included[i]);
             }
         }
         previous[0] = start->y;
@@ -475,14 +513,28 @@ class BoardGame {
         
     }
 
-    vector<int> Heuristic(vector<Node*> moves, int emptyY, int emptyX){
+    vector<int> Heuristic(vector<Node*> moves, int emptyY = -1, int emptyX =-1){
         vector<int> values;
-        for (int i = 0; i < moves.size(); i ++){
-            values.push_back(
-                abs(moves[i]->oY - emptyY) + 
-                abs(moves[i]->oX - emptyX));
+        if(emptyY == -1 && emptyX == -1){
+            for (int i = 0; i < moves.size(); i++){
+                int num = abs(moves[i]->oY - moves[i]->y) + abs(moves[i]->oX - moves[i]->x);
+                cout << "Original: " << moves[i]->number << ", h(n) = " << num << endl;
+                values.push_back(
+                    abs(moves[i]->oY - moves[i]->y) +
+                    abs(moves[i]->oX - moves[i]->x));
+            }
+            return values;
         }
-        return values;
+        else{
+            for (int i = 0; i < moves.size(); i ++){
+                int num = abs(moves[i]->oY - emptyY) + abs(moves[i]->oX - emptyX);
+                cout << "New: " << moves[i]->number << ", h(n) = " << num << endl;
+                values.push_back(
+                    abs(moves[i]->oY - emptyY) + 
+                    abs(moves[i]->oX - emptyX));
+            }
+            return values;
+        }
     }
     /*
     void IDA1(){
@@ -562,10 +614,30 @@ int main()
     //game.grid->ValidMoves();
     cout << endl;
     int i = 0;
-    while(i < 25){
+    /*
+    game.grid->Swap2(game.grid->Empty(), &game.grid->gridNodes[2][0]);
+    game.grid->PrintGridNumber();
+    cout << endl;
+    game.grid->Print();
+    cout << endl
+         << "Number: "
+         << game.grid->gridNodes[1][0].number << " oX: " << game.grid->gridNodes[1][0].oX << " oY: " << game.grid->gridNodes[1][0].oY
+         << endl;
+    cout << "Current "*/
+    
+    while(i < 200){
         game.grid->Swap2(game.BestMove(game.grid->ValidMoves(), game.grid->Empty()), game.grid->Empty());
+        cout << endl << "Loop: " << i << endl;
         game.grid->PrintGridNumber();
-        cout << endl;
+        cout << endl << endl;
         i++;
+        //game.grid->Print(); 
+        cout << endl;
+
+        if(game.grid->CheckSorted()){
+            cout<< "BREAK" << endl;
+            break;
+        }
     }
+    
 }  
