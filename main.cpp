@@ -14,8 +14,8 @@
 
 using namespace std;
 
-void RunIDASearch(int loop, BoardGame* game){
-    for(int i = 0; i < loop; i++){
+void RunIDASearch(int loop, BoardGame* game) {
+    for(int i = 0; i < loop; i++) {
         game->grid->Swap(game->BestMove(game->grid->ValidMoves(), game->grid->Empty()), game->grid->Empty());
         cout << "Loop: " << i << endl;
         game->grid->PrintGridNumber();
@@ -32,7 +32,7 @@ void RunIDASearch(int loop, BoardGame* game){
 /*
 void RandomizeGrid(int loop, BoardGame *game){
     for(int i = 0; i < loop; i++){
-        game->grid->randomize();
+        game->grid->Randomize();
         //cout << "Loop: " << i << endl;
         if (game->grid->isSolveable()) {
             game->grid->PrintGridNumber();
@@ -41,8 +41,7 @@ void RandomizeGrid(int loop, BoardGame *game){
     }
 }*/
 
-int main()
-{
+int main() {
     BoardGame game;
     game.grid->PrintGridNumber();
     game.grid->ShuffleTest();
