@@ -264,13 +264,13 @@ public:
         }
     }
 
-    vector<Node*> ValidMoves(int y = -1, int x = -1){
+    vector<Node*> ValidMoves(Node* nodeIn = nullptr){
         Node* node = nullptr;
-        if(x == -1 && y ==-1){
+        if(nodeIn == nullptr){
             node = Empty();
         }
         else{
-            node = &gridNodes[y][x];
+            node = nodeIn;
         }
 
         int* moves = new int[8];
@@ -428,7 +428,7 @@ class BoardGame {
         }
     }
 
-    Node* BestMove(vector<Node*> moves, Node* start) {
+    Node* BestMove(vector<Node*> moves, Node* start, bool loop = true) {
         vector<int> heuristic_new = Heuristic(moves, start->y, start->x);
         vector<int> heuristic_original = Heuristic(moves);
         int cost = 0; //IDA* usually has a f(x) = g(x) [cost] + h(x) [heuritic],
@@ -483,11 +483,16 @@ class BoardGame {
             includedH.push_back(heuristic_new.at(big));
         }
 
+        for(int i = 0; i < included.size(); i++){
+            if(loop){
+                includedH.at(i)+= BestMove(grid->ValidMoves(included[i]), included[i], !loop)->heuristic_value;
+            }
+        }
+
+
         int threshHold = includedH[0];
-        for (int i = 1; i < includedH.size(); i++)
-        {
-            if (includedH[i] < threshHold)
-            {
+        for (int i = 1; i < includedH.size(); i++){
+            if (includedH[i] < threshHold){
                 threshHold = includedH[i];
             }
         }
@@ -502,6 +507,8 @@ class BoardGame {
         }
         previous[0] = start->y;
         previous[1] = start->x;
+
+        nodes.at(0)->heuristic_value = heuristic_new[0];
         return(nodes.at(0));
         /*
         if(nodes.size() > 1){
@@ -538,6 +545,7 @@ class BoardGame {
     }
     /*
     void IDA1(){
+        https://en.wikipedia.org/wiki/Iterative_deepening_A*
         /*
         path              //current search path (acts like a stack)
         node              //current node (last node in current path)
@@ -548,7 +556,8 @@ class BoardGame {
         is_goal(node)     //goal test
         successors(node)  //node expanding function, expand nodes ordered by g + h(node)
         ida_star(root)    //return either NOT_FOUND or a pair with the best path and its cost
-        *//*
+        */
+    /*
     }
 
     int H(Node* node) {
@@ -627,7 +636,7 @@ int main()
     
     while(i < 200){
         game.grid->Swap2(game.BestMove(game.grid->ValidMoves(), game.grid->Empty()), game.grid->Empty());
-        cout << endl << "Loop: " << i << endl;
+        cout << endl << "Loop: " << i+2 << endl;
         game.grid->PrintGridNumber();
         cout << endl << endl;
         i++;
