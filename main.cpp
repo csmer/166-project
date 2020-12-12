@@ -29,17 +29,17 @@ void RunIDASearch(int loop, BoardGame* game) {
     cout << "Hit the loop Limit" << endl;
 }
 
-/*
-void RandomizeGrid(int loop, BoardGame *game){
-    for(int i = 0; i < loop; i++){
-        game->grid->Randomize();
+
+void RandomizeGrid(int loop, BoardGame *game){ //Function to be called in main
+    for(int i = 0; i < loop; i++){ //Iterate through for a number of times
+        game->grid->Randomize(); //Randomize/shuffle the grid
         //cout << "Loop: " << i << endl;
-        if (game->grid->isSolveable()) {
+        if (game->grid->isSolveable()) { //If it is solveable, print the grid numbers then break
             game->grid->PrintGridNumber();
             break;
         }
     }
-}*/
+}
 
 int main() {
     BoardGame game;

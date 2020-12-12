@@ -86,16 +86,17 @@ public:
         cout << endl;
     }
 
-    /*
+    
     void Randomize() {
+        //Initialize an array to randomize
         int* shuffleArray = new int[nodeNum];
 
         //Iterate through 1..8 to populate shuffleArray with 1,2,3..8
         for (int i = 0; i < nodeNum; i++) {
             shuffleArray[i] = i + 1;
         }
-        unsigned seed = 0;
-        shuffle(&shuffleArray[0], &shuffleArray[nodeNum], default_random_engine(seed));
+        unsigned seed = 0; //Set a seed for randomization
+        shuffle(&shuffleArray[0], &shuffleArray[nodeNum], default_random_engine(seed));  //Shuffle/randomize the array with a seed
 
         int* original = new int [nodeNum];
         for(int i = 0; i < nodeNum; i++) {
@@ -125,9 +126,9 @@ public:
             }
         }
     }
-    */
+    
 
-    // Helper function for isSolveable function
+    // Helper function for isSolveable function, counts the number of inversions in a given grid
     int getInvCount() {
         int count = 0;
         for (int i = 0; i < nodeNum - 1; i++) {
@@ -141,7 +142,7 @@ public:
 
     bool isSolveable() { // Checks to see if sliding puzzle is solvable
         int invCount = getInvCount();
-        return (invCount % 2 == 0); // True if number of inversions are even
+        return (invCount % 2 == 0); // True if number of inversions are even otherwise false of odd
     }
 
     void ShuffleTest() { //Test Case
