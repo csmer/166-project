@@ -24,7 +24,7 @@ public:
     int nodeNum;
     Node** gridNodes;
 
-    Grid(int size = 3) {
+    Grid(int size = 4) {
         gridSize = size;
         nodeNum = (gridSize * gridSize);
         gridNodes = new Node * [gridSize];
@@ -33,26 +33,26 @@ public:
             gridNodes[i] = new Node[size];
         }
 
-       for (int i = 0; i < gridSize; i++) {
-           for (int j = 0; j < gridSize; j++) {
-               gridNodes[i][j].number = i * gridSize + j + 1;
-               gridNodes[i][j].currentLocation = gridNodes[i][j].number;
-               gridNodes[i][j].x = j;
-               gridNodes[i][j].y = i;
-               gridNodes[i][j].oX = j;
-               gridNodes[i][j].oY = i;
-           }
-       }
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
+                gridNodes[i][j].number = i * gridSize + j + 1;
+                gridNodes[i][j].currentLocation = gridNodes[i][j].number;
+                gridNodes[i][j].x = j;
+                gridNodes[i][j].y = i;
+                gridNodes[i][j].oX = j;
+                gridNodes[i][j].oY = i;
+            }
+        }
     }
 
     void Print() {
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
-                cout << "Node: " << gridNodes[i][j].number << 
-                ", Ox: " << gridNodes[i][j].oX << ", Oy: " << gridNodes[i][j].oY << endl;
+                cout << "Node: " << gridNodes[i][j].number <<
+                    ", Ox: " << gridNodes[i][j].oX << ", Oy: " << gridNodes[i][j].oY << endl;
 
                 cout << "Current Loc: " << gridNodes[i][j].currentLocation <<
-                 ", x: " << gridNodes[i][j].x << ", y: " << gridNodes[i][j].y << endl << endl;
+                    ", x: " << gridNodes[i][j].x << ", y: " << gridNodes[i][j].y << endl << endl;
             }
         }
     }
@@ -98,8 +98,8 @@ public:
             if (i != gridSize - 1)
             {
                 cout << endl
-                     << line; //<< "|---";
-                //s
+                    << line; //<< "|---";
+               //s
 
                 for (int j = 0; j < gridSize - 1; j++)
                 {
@@ -114,7 +114,7 @@ public:
     void PrintGrid() {
         int maxLength = to_string(gridSize * gridSize).length();
         string line = "|--";
-        for(int i = 0; i < maxLength; i++) {
+        for (int i = 0; i < maxLength; i++) {
             line += "-";
         }
 
@@ -131,7 +131,7 @@ public:
                 else if (to_string(gridNodes[i][j].currentLocation).length() < maxLength)
                 {
                     cout << " ";
-                    for (int k = 0; k < maxLength - to_string(gridNodes[i][j].currentLocation).length(); k++){
+                    for (int k = 0; k < maxLength - to_string(gridNodes[i][j].currentLocation).length(); k++) {
                         cout << " ";
                     }
                     cout << gridNodes[i][j].currentLocation << " |";
@@ -147,7 +147,7 @@ public:
                 cout << endl << line; //<< "|---";
                 //s
 
-                for (int j = 0; j < gridSize - 1; j++){
+                for (int j = 0; j < gridSize - 1; j++) {
                     cout << line;
                 }
                 cout << "|";
@@ -155,8 +155,8 @@ public:
             cout << endl;
         }
     }
+
     
-    /*
     void randomize() {
         int* shuffleArray = new int[nodeNum];
 
@@ -197,18 +197,35 @@ public:
                 gridNodes[i][j] = newNodes[i][j];
             }
         }
-    } */
+    } 
 
-    void Shuffle(){
-        int newShuffle[9] = {1,9,5,8,3,2,4,6,7};
-        int original[9] =   {1,2,3,4,5,6,7,8,9};
+    // Helper function for isSolveable function
+    int getInvCount() {
+        int count = 0;
+        for (int i = 0; i < nodeNum - 1; i++) {
+            for (int j = i + 1; j < nodeNum; j++) {
+                if (gridNodes[j] && gridNodes[i] && gridNodes[i] > gridNodes[j])
+                    count++;
+            }
+        }
+        return count;
+    }
 
-        Node** newNodes = new Node *[gridSize];
+    bool isSolveable() { // Checks to see if sliding puzzle is solvable
+        int invCount = getInvCount();
+        return (invCount % 2 == 0); // True if number of inversions are even
+    }
+
+    void ShuffleTest() {
+        int newShuffle[9] = { 1,9,5,8,3,2,4,6,7 };
+        int original[9] = { 1,2,3,4,5,6,7,8,9 };
+
+        Node** newNodes = new Node * [gridSize];
         for (int i = 0; i < gridSize; i++) {
             newNodes[i] = new Node[gridSize];
         }
 
-        for (int i = 0; i < nodeNum; i++){
+        for (int i = 0; i < nodeNum; i++) {
             int newLocY = floor(newShuffle[i] / (gridSize + 0.1));
             int newLocX = (newShuffle[i] - 1) % gridSize;
             int oldLocY = floor(original[i] / (gridSize + 0.1));
@@ -239,7 +256,7 @@ public:
         gridNodes[Loc2y][Loc2x].oY = temp.oY;
     }
 
-    void Swap2(Node* node1, Node* node2){
+    void Swap2(Node* node1, Node* node2) {
         Node temp = *node1;
         node1->number = node2->number;
         node1->oX = node2->oX;
@@ -250,8 +267,8 @@ public:
         node2->oY = temp.oY;
     }
 
-    Node* Empty(){
-        Node *empty = nullptr;
+    Node* Empty() {
+        Node* empty = nullptr;
         for (int i = 0; i < gridSize; i++)
         {
             for (int j = 0; j < gridSize; j++)
@@ -264,12 +281,12 @@ public:
         }
     }
 
-    vector<Node*> ValidMoves(Node* nodeIn = nullptr){
+    vector<Node*> ValidMoves(Node* nodeIn = nullptr) {
         Node* node = nullptr;
-        if(nodeIn == nullptr){
+        if (nodeIn == nullptr) {
             node = Empty();
         }
-        else{
+        else {
             node = nodeIn;
         }
 
@@ -280,35 +297,35 @@ public:
         moves[6] = node->y; moves[7] = node->x - 1; //left side
 
         vector<int> validMoves;
-        for(int i = 0; i < 8; i++){
-            if( (-1 < moves[i]) && (moves[i] < gridSize) ){
+        for (int i = 0; i < 8; i++) {
+            if ((-1 < moves[i]) && (moves[i] < gridSize)) {
                 validMoves.push_back(moves[i]);
             }
-            else if(i % 2 == 1){
+            else if (i % 2 == 1) {
                 validMoves.pop_back();
             }
-            else{
+            else {
                 i++;
             }
         }
 
         cout << "Valid Moves: ";
-        for(int i = 0; i < validMoves.size(); i+=2) { 
-            cout << "y " << validMoves[i] << " x " << validMoves[i+1] << ", ";
+        for (int i = 0; i < validMoves.size(); i += 2) {
+            cout << "y " << validMoves[i] << " x " << validMoves[i + 1] << ", ";
         }
         cout << endl << endl;
 
         vector<Node*> validNodes;
-        for(int i = 0; i < validMoves.size(); i+=2){
-            validNodes.push_back(&gridNodes[validMoves[i]][validMoves[i+1]]);
+        for (int i = 0; i < validMoves.size(); i += 2) {
+            validNodes.push_back(&gridNodes[validMoves[i]][validMoves[i + 1]]);
         }
         return validNodes;
     }
 
-    bool CheckSorted(){
+    bool CheckSorted() {
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
-                if(gridNodes[i][j].currentLocation != gridNodes[i][j].number){
+                if (gridNodes[i][j].currentLocation != gridNodes[i][j].number) {
                     return false;
                 }
             }
@@ -318,7 +335,7 @@ public:
 };
 
 class IDA {
-    public:
+public:
     /*
     int threshHold;
     Node** gridNodes;
@@ -348,7 +365,7 @@ class IDA {
         vector<int> heuristic_new = Heuristic(moves);
         for(int i = 0; i < nodeNum)
 
-        //IDA* usually has a f(x) = g(x) [cost] + h(x) [heuritic], 
+        //IDA* usually has a f(x) = g(x) [cost] + h(x) [heuritic],
         //however the weight of each path is same so f(x) = h(x)
 
         int small = heuristic_values[0];
@@ -375,18 +392,18 @@ class IDA {
     */
 };
 
-class BFS{
+class BFS {
 
 };
 // TODO: BFS uses valid moves for starting node then swap in BFS order
 
 class BoardGame {
-    public:
+public:
     Grid* grid;
     IDA* search;
     int* previous;
 
-    BoardGame(){
+    BoardGame() {
         /*
         int size;
         cout << "Enter Board Size 3 or Above: ";
@@ -400,15 +417,15 @@ class BoardGame {
             grid = new Grid(size);
         }
         */
-       grid = new Grid;
-       previous = new int[2];
-       for(int i = 0; i < 2; i++){
-           previous[i] = -1;
-       }
-       //search = new IDA(grid->gridNodes);
+        grid = new Grid;
+        previous = new int[2];
+        for (int i = 0; i < 2; i++) {
+            previous[i] = -1;
+        }
+        //search = new IDA(grid->gridNodes);
     }
 
-    void Sort(vector<int> *arr)
+    void Sort(vector<int>* arr)
     {
         int step = 0;
         for (int i = 0; i < arr->size(); ++i)
@@ -434,12 +451,12 @@ class BoardGame {
         int cost = 0; //IDA* usually has a f(x) = g(x) [cost] + h(x) [heuritic],
         //however the weight of each path is same so f(x) = h(x)
         if (previous[0] != -1) {
-            for(int i = 0; i < moves.size(); i++){
+            for (int i = 0; i < moves.size(); i++) {
                 if (moves[i]->y == previous[0] &&
-                    moves[i]->x == previous[1] ) {
+                    moves[i]->x == previous[1]) {
 
-                    moves[i] = moves[moves.size()-1];
-                    heuristic_new[i] = heuristic_new[heuristic_new.size()-1];
+                    moves[i] = moves[moves.size() - 1];
+                    heuristic_new[i] = heuristic_new[heuristic_new.size() - 1];
                     heuristic_original[i] = heuristic_original[heuristic_original.size() - 1];
                     moves.pop_back();
                     heuristic_new.pop_back();
@@ -449,7 +466,7 @@ class BoardGame {
             }
         }
 
-        
+
         vector<Node*> excluded;
         vector<Node*> included;
         vector<int> includedH;
@@ -460,7 +477,7 @@ class BoardGame {
             num = moves[i]->number;
             newh = heuristic_new[i];
             oldh = heuristic_original[i];
-            
+
             if (heuristic_new[i] > heuristic_original[i]) {
                 excluded.push_back(moves[i]);
             }
@@ -470,10 +487,10 @@ class BoardGame {
             }
         }
 
-        if(excluded.size() == moves.size()) { 
+        if (excluded.size() == moves.size()) {
             int big = 0;
             moves.pop_back();
-            for(int i = 1; i < heuristic_new.size(); i++){
+            for (int i = 1; i < heuristic_new.size(); i++) {
                 if (heuristic_new[i] < heuristic_new[big]) {
                     big = i;
                 }
@@ -483,24 +500,24 @@ class BoardGame {
             includedH.push_back(heuristic_new.at(big));
         }
 
-        for(int i = 0; i < included.size(); i++){
-            if(loop){
-                includedH.at(i)+= BestMove(grid->ValidMoves(included[i]), included[i], !loop)->heuristic_value;
+        for (int i = 0; i < included.size(); i++) {
+            if (loop) {
+                includedH.at(i) += BestMove(grid->ValidMoves(included[i]), included[i], !loop)->heuristic_value;
             }
         }
 
 
         int threshHold = includedH[0];
-        for (int i = 1; i < includedH.size(); i++){
-            if (includedH[i] < threshHold){
+        for (int i = 1; i < includedH.size(); i++) {
+            if (includedH[i] < threshHold) {
                 threshHold = includedH[i];
             }
         }
-        
+
         vector<Node*> nodes;
         Node* node = nullptr;
 
-        for (int i = 0; i < included.size(); i++){
+        for (int i = 0; i < included.size(); i++) {
             if (includedH[i] <= threshHold) {
                 nodes.push_back(included[i]);
             }
@@ -517,13 +534,13 @@ class BoardGame {
             }
         }
         */
-        
+
     }
 
-    vector<int> Heuristic(vector<Node*> moves, int emptyY = -1, int emptyX =-1){
+    vector<int> Heuristic(vector<Node*> moves, int emptyY = -1, int emptyX = -1) {
         vector<int> values;
-        if(emptyY == -1 && emptyX == -1){
-            for (int i = 0; i < moves.size(); i++){
+        if (emptyY == -1 && emptyX == -1) {
+            for (int i = 0; i < moves.size(); i++) {
                 int num = abs(moves[i]->oY - moves[i]->y) + abs(moves[i]->oX - moves[i]->x);
                 cout << "Original: " << moves[i]->number << ", h(n) = " << num << endl;
                 values.push_back(
@@ -532,12 +549,12 @@ class BoardGame {
             }
             return values;
         }
-        else{
-            for (int i = 0; i < moves.size(); i ++){
+        else {
+            for (int i = 0; i < moves.size(); i++) {
                 int num = abs(moves[i]->oY - emptyY) + abs(moves[i]->oX - emptyX);
                 cout << "New: " << moves[i]->number << ", h(n) = " << num << endl;
                 values.push_back(
-                    abs(moves[i]->oY - emptyY) + 
+                    abs(moves[i]->oY - emptyY) +
                     abs(moves[i]->oX - emptyX));
             }
             return values;
@@ -557,47 +574,47 @@ class BoardGame {
         successors(node)  //node expanding function, expand nodes ordered by g + h(node)
         ida_star(root)    //return either NOT_FOUND or a pair with the best path and its cost
         */
-    /*
-    }
-
-    int H(Node* node) {
-        return (abs(node->oY - node->y) +
-            abs(node->oX - node->x));
-    }
-
-    void ida_star(Node* root, vector<Node*> moves) {
-        int bound = 0;
-        int t = 0;
-        for(int i = 0; i < moves.size(); i++){
-            t = Search(moves[i], bound);
-            if t = FOUND then return (path, bound)
-            if t = ∞ then return NOT_FOUND
-            bound = t;
+        /*
         }
-    }
 
-    int Search(Node* node, int bound){
-        int f = H(node);
-        if (f > bound){ return f; }
-        if (is_goal(node)){ return 1; } //true
-        int min = grid->nodeNum+1;
-        for(succ in successors(node){
-            if(succ not in path) {}
-                path.push(succ)
-                t := search(path, g + cost(node, succ), bound)
-                if t = FOUND then return FOUND
-                if t < min then min := t
-                path.pop()
+        int H(Node* node) {
+            return (abs(node->oY - node->y) +
+                abs(node->oX - node->x));
+        }
+
+        void ida_star(Node* root, vector<Node*> moves) {
+            int bound = 0;
+            int t = 0;
+            for(int i = 0; i < moves.size(); i++){
+                t = Search(moves[i], bound);
+                if t = FOUND then return (path, bound)
+                if t = ∞ then return NOT_FOUND
+                bound = t;
             }
         }
-        return min
-    } 
 
-    bool is_goal(Node* node){
-        return (node->oX == emtpy);
-    }
-    
-    }*/
+        int Search(Node* node, int bound){
+            int f = H(node);
+            if (f > bound){ return f; }
+            if (is_goal(node)){ return 1; } //true
+            int min = grid->nodeNum+1;
+            for(succ in successors(node){
+                if(succ not in path) {}
+                    path.push(succ)
+                    t := search(path, g + cost(node, succ), bound)
+                    if t = FOUND then return FOUND
+                    if t < min then min := t
+                    path.pop()
+                }
+            }
+            return min
+        }
+
+        bool is_goal(Node* node){
+            return (node->oX == emtpy);
+        }
+
+        }*/
 };
 
 int main()
@@ -614,7 +631,7 @@ int main()
     //game.grid->PrintGridNumbers();
     //cout << endl;
     //game.grid->randomize();
-    game.grid->Shuffle();
+    //game.grid->Shuffle();
     //game.grid->PrintGrid();
     //game.grid->PrintGridNumbers();
     //game.grid->Swap(0, 2, 1, 1);
@@ -633,20 +650,29 @@ int main()
          << game.grid->gridNodes[1][0].number << " oX: " << game.grid->gridNodes[1][0].oX << " oY: " << game.grid->gridNodes[1][0].oY
          << endl;
     cout << "Current "*/
-    
-    while(i < 200){
+    int j = 0;
+    while (j < 17) {
+        j++;
+        game.grid->randomize();
+        //cout << "Loop: " << j << endl;
+        if (game.grid->isSolveable()) {
+            game.grid->PrintGridNumber();
+            break;
+        }
+    }
+    while (i < 300) {
         game.grid->Swap2(game.BestMove(game.grid->ValidMoves(), game.grid->Empty()), game.grid->Empty());
-        cout << endl << "Loop: " << i+2 << endl;
+        cout << endl << "Loop: " << i + 2 << endl;
         game.grid->PrintGridNumber();
         cout << endl << endl;
         i++;
         //game.grid->Print(); 
         cout << endl;
 
-        if(game.grid->CheckSorted()){
-            cout<< "BREAK" << endl;
+        if (game.grid->CheckSorted()) {
+            cout << "BREAK" << endl;
             break;
         }
     }
-    
-}  
+
+}
